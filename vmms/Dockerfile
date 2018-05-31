@@ -38,6 +38,9 @@ RUN ln -s /usr/local/bin/sml/bin/sml /usr/local/sbin/sml
 RUN ln -s /usr/local/bin/sml/bin/ml-lex /usr/local/sbin/ml-lex
 RUN ln -s /usr/local/bin/sml/bin/ml-yacc /usr/local/sbin/ml-yacc
 
+#Node JS setup
+RUN apt-get install -y nodejs
+
 #Flex setup
 RUN apt-get install -y flex
 
@@ -73,4 +76,6 @@ RUN ls -l /home
 RUN which autodriver
 RUN which javac
 RUN which sml
+RUN which nodejs
+RUN nodejs --version
 RUN g++ --version
