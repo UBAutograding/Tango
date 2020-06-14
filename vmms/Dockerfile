@@ -1,15 +1,15 @@
 # Autolab - autograding docker image
 
 FROM ubuntu:18.04
-MAINTAINER David Dobmeier <daviddob@buffalo.edu>
+MAINTAINER Ian Kaminer <iankaminer@buffalo.edu>
 
-#C++ Setup
-RUN apt-get update
-RUN apt-get install -y gcc
-RUN apt-get install -y make
-RUN apt-get install -y build-essential
-RUN apt-get install -y libcunit1-dev libcunit1-doc libcunit1
+#prerequisites
+RUN apt-get update --fix-missing
+RUN apt-get update && apt-get install -y apt-utils
+RUN apt-get install -y gcc make build-essential libcunit1-dev libcunit1-doc libcunit1 wget python qemu xorg-dev libncurses5-dev gdb git
 
+
+### WHAT ACTUALLY MATTERS
 #Python Setup
 RUN apt-get update --fix-missing && \
     DEBIAN_FRONTEND=nointeractive apt-get install -y \
@@ -18,42 +18,10 @@ RUN apt-get update --fix-missing && \
     pep8 python-pip python3-pip python-wheel \
     python-sphinx && \
     pip install --upgrade setuptools
-	
-#Java Setup
-RUN apt-get update --fix-missing
-RUN apt-get install -y default-jdk
 
-#Valgrind Setup
-RUN apt-get update
-RUN apt-get install -y valgrind
+#spim Setup
+RUN apt-get install -y spim
 
-#SML Setup
-RUN mkdir -p /usr/local/bin/sml
-WORKDIR /usr/local/bin/sml
-RUN apt-get install -y gcc-multilib g++-multilib lib32z1 lib32ncurses5 wget
-RUN wget http://www.smlnj.org/dist/working/110.78/config.tgz
-RUN tar -xzvf config.tgz
-RUN config/install.sh
-RUN ln -s /usr/local/bin/sml/bin/sml /usr/local/sbin/sml
-RUN ln -s /usr/local/bin/sml/bin/ml-lex /usr/local/sbin/ml-lex
-RUN ln -s /usr/local/bin/sml/bin/ml-yacc /usr/local/sbin/ml-yacc
-
-#Flex setup
-RUN apt-get install -y flex
-
-#Bison Setup
-RUN apt-get install -y bison
-
-#Utility setup
-RUN apt-get install -y unzip
-
-#NodeJS setup
-RUN apt-get update --fix-missing
-RUN apt-get install -y nodejs
-RUN apt-get install -y npm
-
-#OCaml Setup
-RUN apt-get install -y ocaml
 
 # Install autodriver
 WORKDIR /home
