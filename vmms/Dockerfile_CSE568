@@ -56,9 +56,10 @@ RUN mkdir autolab autograde output
 RUN chown autolab:autolab autolab
 RUN chown autolab:autolab output
 RUN chown autograde:autograde autograde
+RUN chown autograde:autograde catkin_ws
 RUN apt-get update && apt-get install -y sudo 
 RUN apt-get install -y git
-RUN git clone https://github.com/autolab/Tango.git
+RUN git clone https://github.com/UBAutograding/Tango.git
 WORKDIR Tango/autodriver
 RUN make clean && make
 RUN cp autodriver /usr/bin/autodriver
