@@ -1,0 +1,88 @@
+FROM ubuntu:focal
+
+LABEL maintainer="Smit Rajguru <smitmaka@buffalo.edu>"
+
+# Set non-interactive mode and the default ROS distro
+ENV DEBIAN_FRONTEND=noninteractive \
+    ROS_DISTRO=noetic
+
+# System setup, utilities, Python, and other dependencies
+RUN echo 'Etc/UTC' > /etc/timezone && \
+    ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends tzdata unzip tmux python3-pip curl git sudo lsb-release gnupg2 && \
+    apt-get upgrade -y && \
+    rm -rf /var/lib/apt/lists/*
+
+# Python Libraries
+RUN pip3 install numpy matplotlib pandas opencv-python opencv-contrib-python scipy -U catkin_tools
+
+# Installing ROS Noetic
+RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list' && \
+    curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add - && \
+    apt-get update && \
+    apt-get install -y ros-noetic-desktop-full ros-noetic-navigation ros-noetic-teb-local-planner* \
+    ros-noetic-ros-control ros-noetic-ros-controllers ros-noetic-gazebo-ros-control ros-noetic-ackermann-msgs \
+    ros-noetic-serial ros-noetic-turtlebot3* ros-noetic-rosserial* ros-noetic-rosbridge-suite && \
+    rm -rf /var/lib/apt/lists/*
+
+
+# Update and install Husky and gui packages
+RUN apt-get update && apt-get install -y \
+    ros-noetic-husky-gazebo \
+    ros-noetic-husky-viz \
+    ros-noetic-husky-navigation \
+    ros-noetic-gazebo-ros-pkgs \
+    ros-noetic-gazebo-ros-control \
+    libgl1-mesa-glx \
+    libgl1-mesa-dri && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set environment variable
+ENV LIBGL_ALWAYS_SOFTWARE=1
+
+# Setup entrypoint
+RUN git clone https://github.com/SmitRajguru/ros_dockerfile.git && \
+    chmod +x /ros_dockerfile/ros_entrypoint.sh
+
+ENTRYPOINT ["/ros_dockerfile/ros_entrypoint.sh"]
+
+CMD ["bash"]
+
+# Initial workspace
+ENV CATKIN_WS=/home/catkin_ws
+WORKDIR $CATKIN_WS
+RUN /bin/bash -c "mkdir -p $CATKIN_WS/src && \
+    source /opt/ros/${ROS_DISTRO}/setup.bash && \
+    catkin build"
+
+
+
+# Install autodriver
+WORKDIR /home
+RUN useradd autolab && \
+    useradd autograde && \
+    mkdir autolab autograde output && \
+    chown autolab:autolab autolab output && \
+    chown autograde:autograde autograde && \
+    git clone https://github.com/autolab/Tango.git && \
+    cd Tango/autodriver && \
+    make clean && make && \
+    cp autodriver /usr/bin/autodriver && \
+    chmod +s /usr/bin/autodriver && \
+    rm -rf /home/Tango/
+    
+RUN usermod -aG sudo autograde
+RUN echo "autograde:password" | chpasswd
+
+RUN usermod -aG sudo autolab
+RUN echo "autolab:password" | chpasswd
+
+
+# Clean up
+RUN apt-get autoremove -y && \
+    apt-get clean
+
+# Check installations. 
+# Note: This section is just for debugging. Remove it in production.
+RUN ls -l /home && which autodriver && rosversion -d
