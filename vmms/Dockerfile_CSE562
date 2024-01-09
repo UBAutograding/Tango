@@ -38,7 +38,8 @@ RUN cmake -B build \
     -DCMAKE_CXX_STANDARD=11 \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DABSL_PROPAGATE_CXX_STD=ON \
-    -DABSL_ENABLE_INSTALL=ON
+    -DABSL_ENABLE_INSTALL=ON \
+    -DBUILD_SHARED_LIBS=ON
 RUN cmake --build build --target install
 
 WORKDIR /tmp
@@ -50,7 +51,8 @@ RUN cmake -B build \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CXX_STANDARD=11 \
     -DCMAKE_INSTALL_PREFIX=/usr \
-    -DBUILD_GMOCK=ON
+    -DBUILD_GMOCK=ON \
+    -DBUILD_SHARED_LIBS=ON
 RUN cmake --build build --target install
 WORKDIR /tmp
 RUN rm -rf googletest
@@ -80,3 +82,4 @@ RUN rm -rf Tango/
 RUN ls -l /home
 RUN which autodriver
 RUN g++ --version
+
