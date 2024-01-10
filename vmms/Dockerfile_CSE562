@@ -35,7 +35,7 @@ WORKDIR /tmp/abseil-cpp
 RUN git checkout 20210324.2
 RUN cmake -B build \
     -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_CXX_STANDARD=11 \
+    -DCMAKE_CXX_STANDARD=17 \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DABSL_PROPAGATE_CXX_STD=ON \
     -DABSL_ENABLE_INSTALL=ON \
@@ -49,7 +49,7 @@ WORKDIR googletest
 RUN git checkout release-1.11.0
 RUN cmake -B build \
     -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_CXX_STANDARD=11 \
+    -DCMAKE_CXX_STANDARD=17 \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DBUILD_GMOCK=ON \
     -DBUILD_SHARED_LIBS=ON
