@@ -1,0 +1,42 @@
+FROM ubuntu:22.04
+
+#Icarus Verilog Setup
+RUN apt-get update --fix-missing && \
+    DEBIAN_FRONTEND=nointeractive apt-get install -y iverilog
+
+#Python Setup
+RUN apt-get update --fix-missing && \
+    DEBIAN_FRONTEND=nointeractive apt-get install -y python3
+
+#C++ Setup
+RUN apt-get update
+RUN apt-get install -y gcc
+RUN apt-get install -y make
+
+#Utility setup
+RUN apt-get install -y unzip
+
+# Install autodriver
+WORKDIR /home
+RUN useradd autolab
+RUN useradd autograde
+RUN mkdir autolab autograde output
+RUN chown autolab:autolab autolab
+RUN chown autolab:autolab output
+RUN chown autograde:autograde autograde
+RUN apt-get update && apt-get install -y sudo 
+RUN apt-get install -y git
+RUN git clone https://github.com/UBAutograding/Tango.git
+WORKDIR Tango/autodriver
+RUN make clean && make
+RUN cp autodriver /usr/bin/autodriver
+RUN chmod +s /usr/bin/autodriver
+
+# Clean up
+WORKDIR /home
+RUN apt-get -y autoremove
+RUN rm -rf Tango/
+
+# Check installation
+RUN ls -l /home
+RUN which autodriver
