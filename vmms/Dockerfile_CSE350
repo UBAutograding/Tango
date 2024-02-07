@@ -58,6 +58,4 @@ RUN ls -la /root
 RUN cargo --version
 RUN cargo init hello_world && cd hello_world && cargo run && cd .. && rm -r hello_world
 
-WORKDIR /opt
-
 
