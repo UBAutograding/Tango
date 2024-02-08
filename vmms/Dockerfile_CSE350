@@ -24,12 +24,6 @@ RUN apt-get update --fix-missing && \
 RUN apt-get update
 RUN apt-get install -y valgrind
 
-#Rust Setup
-RUN apt-get install -y curl
-RUN curl --proto '=https' --tlsv1.2 -sSf -o rustup.sh https://sh.rustup.rs && chmod +x rustup.sh 
-RUN sh rustup.sh -y
-ENV PATH="${PATH}:/root/.cargo/bin"
-
 # Install autodriver
 WORKDIR /home
 RUN useradd autolab
@@ -46,6 +40,11 @@ RUN make clean && make
 RUN cp autodriver /usr/bin/autodriver
 RUN chmod +s /usr/bin/autodriver
 
+#Rust Setup
+RUN apt-get install -y curl
+RUN su autolab -c 'cd ~ && curl --proto '=https' --tlsv1.2 -sSf -o rustup.sh https://sh.rustup.rs && chmod +x rustup.sh && sh rustup.sh -y'
+ENV PATH="${PATH}:~/.cargo/bin"
+
 # Clean up
 WORKDIR /home
 RUN apt-get -y autoremove
@@ -55,7 +54,6 @@ RUN rm -rf Tango/
 RUN ls -l /home
 RUN which autodriver
 RUN ls -la /root
-RUN cargo --version
-RUN cargo init hello_world && cd hello_world && cargo run && cd .. && rm -r hello_world
+RUN su autolab -c '~/.cargo/bin/cargo --version'
 
 
