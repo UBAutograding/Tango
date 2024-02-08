@@ -56,6 +56,4 @@ RUN which autodriver
 RUN ls -la /root
 RUN su autolab -c '~/.cargo/bin/cargo --version'
 
-WORKDIR /home
-
 
