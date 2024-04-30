@@ -1,10 +1,9 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 MAINTAINER Jaric Zola <jzola@buffalo.edu>
 
 RUN apt-get update --fix-missing
-RUN apt-get upgrade
+RUN apt-get upgrade -y
 
-RUN apt-get install -y apt-utils
 RUN apt-get install -y gcc
 RUN apt-get install -y g++
 RUN apt-get install -y make
@@ -16,11 +15,11 @@ RUN apt-get install -y unzip
 RUN apt-get install -y gawk
 RUN apt-get install -y git
 
-RUN apt install -y python3
-RUN apt install -y rustc
-RUN apt install -y golang-go
-RUN apt install -y default-jre
-RUN apt install -y scala
+RUN apt-get install -y python3
+RUN apt-get install -y rustc
+RUN apt-get install -y golang-go
+RUN apt-get install -y default-jre
+RUN apt-get install -y scala
 
 # Install autodriver
 WORKDIR /home
@@ -30,7 +29,7 @@ RUN mkdir autolab autograde output
 RUN chown autolab:autolab autolab
 RUN chown autolab:autolab output
 RUN chown autograde:autograde autograde
-RUN apt-get update && apt-get install -y sudo 
+RUN apt-get update && apt-get install -y sudo
 RUN apt-get install -y git
 RUN git clone https://github.com/UBAutograding/Tango.git
 WORKDIR Tango/autodriver
