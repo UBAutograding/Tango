@@ -1,0 +1,69 @@
+# Autolab - autograding docker image
+
+FROM ubuntu:22.04
+LABEL author="Andrew K. Hirsch <akhirsch@buffalo.edu>"
+
+USER root
+
+#C++ Setup
+RUN apt-get update --fix-missing
+RUN apt-get install -y gcc
+RUN apt-get install -y make
+RUN apt-get install -y build-essential
+
+#Utility setup
+RUN apt-get update --fix-missing
+RUN apt-get install -y unzip zip wget
+RUN apt-get install -y sudo
+
+#OPAM setup
+RUN apt-get update --fix-missing
+RUN apt-get install -y rsync mercurial git darcs
+RUN apt-get install -y bubblewrap
+RUN wget https://github.com/ocaml/opam/releases/download/2.2.0/opam-2.2.0-arm64-linux -O /usr/bin/opam
+RUN chmod a+x /usr/bin/opam
+
+# Install autodriver
+WORKDIR /home
+RUN useradd autolab
+RUN useradd autograde
+RUN mkdir autolab autograde output
+RUN chown autolab:autolab autolab
+RUN chown autolab:autolab output
+RUN chown autograde:autograde autograde
+RUN git clone https://github.com/autolab/Tango.git
+WORKDIR Tango/autodriver
+RUN make clean && make
+RUN cp autodriver /usr/bin/autodriver
+RUN chmod +s /usr/bin/autodriver
+
+#OCaml Setup
+WORKDIR /home/autolab
+USER autolab
+RUN opam init --bare -a -y 
+RUN opam switch create cse505 ocaml-base-compiler.5.1.1
+RUN echo "source .profile" >.bashrc
+# RUN eval $(opam env --switch=cse505)
+RUN opam install -y utop odoc ounit2 qcheck bisect_ppx menhir ocaml-lsp-server ocamlformat dune
+RUN chmod +x .profile
+RUN chmod +x .bashrc
+RUN chmod +x .opam/opam-init/init.sh
+RUN chmod +x .opam/opam-init/complete.sh
+RUN chmod +x .opam/opam-init/env_hook.sh
+RUN chmod +x .opam/opam-init/variables.sh
+ENV PATH=/home/autolab/.opam/cse505/bin:$PATH
+
+# Clean up
+USER root
+WORKDIR /home
+RUN apt-get -y autoremove
+RUN rm -rf Tango/
+
+# Check installation
+RUN ls -l /home
+RUN which autodriver
+USER autolab
+RUN which opam
+RUN ocamlc --version
+RUN dune --version
+USER root
