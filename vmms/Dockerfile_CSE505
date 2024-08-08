@@ -20,7 +20,8 @@ RUN apt-get install -y sudo
 RUN apt-get update --fix-missing
 RUN apt-get install -y rsync mercurial git darcs
 RUN apt-get install -y bubblewrap
-RUN wget https://github.com/ocaml/opam/releases/download/2.2.0/opam-2.2.0-arm64-linux -O /usr/bin/opam
+RUN wget https://github.com/ocaml/opam/releases/download/2.2.0/opam-2.2.0-x86_64-linux -O /usr/bin/opam
+#RUN wget https://github.com/ocaml/opam/releases/download/2.2.0/opam-2.2.0-arm64-linux -O /usr/bin/opam
 RUN chmod a+x /usr/bin/opam
 
 # Install autodriver
@@ -52,9 +53,11 @@ RUN chmod +x .opam/opam-init/complete.sh
 RUN chmod +x .opam/opam-init/env_hook.sh
 RUN chmod +x .opam/opam-init/variables.sh
 ENV PATH=/home/autolab/.opam/cse505/bin:$PATH
+# CMD ["export", "PATH=/home/autolab/.opam/cse505/bin:$PATH"]
+USER root
+RUN echo "export PATH=/home/autolab/.opam/cse505/bin:$PATH" >> /etc/environment
 
 # Clean up
-USER root
 WORKDIR /home
 RUN apt-get -y autoremove
 RUN rm -rf Tango/
