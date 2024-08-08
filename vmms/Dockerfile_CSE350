@@ -19,7 +19,7 @@ RUN apt-get update --fix-missing && \
     pep8 python-pip python3-pip python-wheel \
     python-sphinx && \
     pip install --upgrade setuptools
-  
+
 #Valgrind Setup
 RUN apt-get update
 RUN apt-get install -y valgrind
