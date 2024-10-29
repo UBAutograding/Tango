@@ -45,7 +45,7 @@ RUN opam init --bare -a -y
 RUN opam switch create cse505 ocaml-base-compiler.5.1.1
 RUN echo "source .profile" >.bashrc
 # RUN eval $(opam env --switch=cse505)
-RUN opam install -y utop odoc ounit2 qcheck bisect_ppx menhir ocaml-lsp-server ocamlformat dune
+RUN opam install -y utop odoc ounit2 qcheck bisect_ppx menhir ocaml-lsp-server ocamlformat dune ppx_monad
 RUN chmod +x .profile
 RUN chmod +x .bashrc
 RUN chmod +x .opam/opam-init/init.sh
