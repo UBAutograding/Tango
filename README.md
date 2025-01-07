@@ -1,7 +1,10 @@
-![Welcome to Autolab](https://github.com/autolab/Autolab/blob/master/public/images/autolab_logo.png)
+# We've moved!
 
-Tango [![Circle CI](https://circleci.com/gh/autolab/Tango.svg?style=svg)](https://circleci.com/gh/autolab/Tango)
-======
+Dockerfiles for autograding (at UB) should go here: https://github.com/UB-CSE-IT/Autograding-Images
+
+UB's fork of Tango is now at: https://github.com/UB-CSE-IT/Tango
+
+# (Legacy) Tango
 
 Tango is a standalone RESTful Web service that runs and manages jobs. A job is a set of files that must satisfy the following constraints:
 
